@@ -1,0 +1,24 @@
+---
+// Tiny decorative shapes. Pure CSS motion, disabled for reduced-motion users.
+interface Props { variant?: 'hero' | 'band' }
+const { variant = 'hero' } = Astro.props;
+const pieces = [
+  { t: '2%',  l: '0%',  s: 22, c: '#5ad1f2', k: 'star',  r: 10,  d: 0 },
+  { t: '-3%', l: '72%', s: 16, c: '#ffc933', k: 'dot',   r: 0,   d: 1.2 },
+  { t: '30%', l: '97%', s: 24, c: '#ff4d4d', k: 'squig', r: 25,  d: 0.6 },
+  { t: '60%', l: '-3%', s: 20, c: '#ffc933', k: 'tri',   r: -15, d: 1.8 },
+  { t: '93%', l: '80%', s: 22, c: '#ffc933', k: 'star',  r: 15,  d: 0.3 },
+  { t: '90%', l: '6%',  s: 14, c: '#ff4d4d', k: 'dot',   r: 0,   d: 2.1 },
+  { t: '12%', l: '90%', s: 18, c: '#5ad1f2', k: 'tri',   r: 20,  d: 1.0 },
+];
+---
+<div class={`confetti confetti-${variant}`} aria-hidden="true">
+  {pieces.map((p) => (
+    <svg class="confetti-piece" viewBox="0 0 24 24" width={p.s} height={p.s} style={`top:${p.t};left:${p.l};--r:${p.r}deg;animation-delay:${p.d}s`}>
+      {p.k === 'dot' && <circle cx="12" cy="12" r="8" fill={p.c} />}
+      {p.k === 'tri' && <path d="M12 3l10 17H2z" fill={p.c} stroke-linejoin="round" />}
+      {p.k === 'star' && <path d="M12 2l2.9 6.6 7.1.7-5.4 4.8 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.3l7.1-.7z" fill={p.c} />}
+      {p.k === 'squig' && <path d="M3 15c3-8 6-8 9 0s6 8 9 0" fill="none" stroke={p.c} stroke-width="3.5" stroke-linecap="round" />}
+    </svg>
+  ))}
+</div>

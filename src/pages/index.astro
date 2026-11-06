@@ -1,0 +1,275 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ItemArt from '../components/ItemArt.astro';
+import Confetti from '../components/Confetti.astro';
+import heroPhoto from '../assets/hero.webp';
+import bandPhoto from '../assets/party-band.webp';
+import { business, contacts, serviceAreas, categories, rentals } from '../data/site';
+
+const catLabel = Object.fromEntries(categories.map((c) => [c.id, c.label]));
+const money = (n: number) => `$${n}`;
+---
+<Base
+  title="Leaps of Laughter | Party rentals in Plant City, FL"
+  description="Bounce houses, water slides, games and add-ons from Leaps of Laughter LLC in Plant City, FL. Pick your rentals and request a date."
+>
+  <main>
+  <!-- HERO -->
+  <div class="hero">
+    <header class="site-header container">
+      <a class="brand" href="#top" aria-label="Leaps of Laughter, back to top">
+        <svg viewBox="0 0 40 40" width="36" height="36" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#ffc933"/><path d="M8 25c0-9 5-14 12-14s12 5 12 14" fill="none" stroke="#1a0b2e" stroke-width="4.5" stroke-linecap="round"/><circle cx="20" cy="29" r="3.4" fill="#ff4d4d"/></svg>
+        <span>Leaps of Laughter</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#rentals">Rentals</a>
+        <a href="#how">How it works</a>
+        <a href="#areas">Service areas</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="btn btn-yellow btn-sm" href="#request">Request a date</a>
+    </header>
+
+    <section class="hero-inner container" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">{business.kind} · {business.city}</p>
+          <h1>Make their party <span class="hl">unforgettable</span></h1>
+          <p class="lead">{business.tagline}</p>
+          <div class="cta-row">
+            <a class="btn btn-yellow" href="#rentals">See rentals</a>
+            <a class="btn btn-ghost" href="#request">Request a date</a>
+          </div>
+          <p class="trust"><a href={business.facebook} target="_blank" rel="noopener noreferrer">{business.facebookLine}<span class="sr-only"> (opens Facebook in a new tab)</span></a></p>
+        </div>
+        <div class="hero-photo">
+          <div class="blob" aria-hidden="true"></div>
+          <Confetti />
+          <Image
+            src={heroPhoto}
+            alt="A little girl with colorful paint on her face looks up and smiles"
+            widths={[360, 540, 720]}
+            sizes="(min-width: 900px) 420px, 62vw"
+            format="webp"
+            quality={68}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <span class="sticker" aria-hidden="true">Plant City, FL</span>
+        </div>
+    </section>
+    <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0 34C240 74 480 74 720 40S1200 0 1440 34V70H0z" fill="#fff"/></svg>
+  </div>
+
+  <!-- RENTALS -->
+  <section class="section" id="rentals" aria-labelledby="rentals-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow eyebrow-dark">Our inventory</p>
+        <h2 id="rentals-h">Pick a rental</h2>
+        <p class="sub">Add what you like to your request, then send it in one go.</p>
+      </div>
+
+      <div class="chips" role="group" aria-label="Filter rentals">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
+        {categories.map((c) => (
+          <button type="button" class="chip" data-filter={c.id} aria-pressed="false">{c.label}</button>
+        ))}
+      </div>
+      <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
+
+      <ul class="grid" id="grid">
+        {rentals.map((r) => (
+          <li class="card" data-rental data-id={r.id} data-name={r.name} data-cat={r.category}>
+            <div class="art" data-art={r.art}><ItemArt art={r.art} /></div>
+            <div class="card-body">
+              <p class="tag">{catLabel[r.category]}</p>
+              <h3>{r.name}</h3>
+              {r.specs.length > 0 && (
+                <ul class="specs" aria-label={`${r.name} size`}>
+                  {r.specs.map((s) => <li>{s}</li>)}
+                </ul>
+              )}
+              {r.note && <p class="note">{r.note}</p>}
+              <div class="card-foot">
+                <p class="price"><span class="sr-only">Price: </span>{money(r.price)}</p>
+                <button type="button" class="btn btn-add" data-add aria-pressed="false">
+                  <span class="add-label">Add to my request</span>
+                </button>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section section-tint" id="how" aria-labelledby="how-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow eyebrow-dark">Simple as 1, 2, 3</p>
+        <h2 id="how-h">How it works</h2>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <span class="step-num" aria-hidden="true">1</span>
+          <h3>Choose</h3>
+          <p>Browse the rentals and tap “Add to my request” on everything you want.</p>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">2</span>
+          <h3>Send a request</h3>
+          <p>Tell us your event date, ZIP code and any notes, then send it.</p>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">3</span>
+          <h3>They confirm with you</h3>
+          <p>Leaps of Laughter reaches out to confirm the details with you.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- SERVICE AREAS -->
+  <section class="section" id="areas" aria-labelledby="areas-h">
+    <div class="container areas">
+      <div class="areas-copy">
+        <p class="eyebrow eyebrow-dark">Where we go</p>
+        <h2 id="areas-h">Service areas</h2>
+        <p class="sub">Based in {business.city}, serving these areas:</p>
+        <ul class="area-chips">
+          {serviceAreas.map((a) => <li>{a}</li>)}
+        </ul>
+      </div>
+      <div class="areas-photo">
+        <Confetti />
+        <Image
+          src={bandPhoto}
+          alt="A Happy Birthday banner hung between two posts under string lights at an outdoor party"
+          widths={[360, 540, 720]}
+          sizes="(min-width: 900px) 460px, 92vw"
+          format="webp"
+          quality={66}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- REQUEST FORM -->
+  <section class="section section-tint" id="request" aria-labelledby="request-h">
+    <div class="container narrow">
+      <div class="section-head">
+        <p class="eyebrow eyebrow-dark">Request a date</p>
+        <h2 id="request-h" tabindex="-1">Tell us about your party</h2>
+        <p class="sub">This is a demo: nothing you type here is sent anywhere.</p>
+      </div>
+
+      <form class="form" id="request-form" action="#request" method="post" autocomplete="on">
+        <fieldset class="picked">
+          <legend>Chosen items</legend>
+          <p class="picked-empty" id="picked-empty">Nothing added yet. <a href="#rentals">Pick a rental</a> and it will show up here.</p>
+          <ul class="picked-list" id="picked-list"></ul>
+          <input type="hidden" name="items" id="items-field" value="" />
+        </fieldset>
+
+        <div class="fields">
+          <div class="field">
+            <label for="f-name">Your name <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="f-phone">Phone <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+          </div>
+          <div class="field field-wide">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="f-date">Event date <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-date" name="date" type="date" required />
+          </div>
+          <div class="field">
+            <label for="f-zip">ZIP code</label>
+            <input id="f-zip" name="zip" type="text" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" autocomplete="postal-code" title="5-digit ZIP code" />
+          </div>
+          <div class="field field-wide">
+            <label for="f-notes">Notes</label>
+            <textarea id="f-notes" name="notes" rows="4"></textarea>
+          </div>
+        </div>
+        <p class="form-hint"><span class="req" aria-hidden="true">*</span> Required</p>
+        <button type="submit" class="btn btn-yellow btn-block">Send my request</button>
+      </form>
+
+      <div class="confirm" id="confirm" tabindex="-1" role="status" hidden>
+        <div class="confirm-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#1a0b2e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 id="confirm-title">Thanks! Your request is ready.</h3>
+        <p class="confirm-demo"><strong>Demo:</strong> in the live version this request goes straight to Leaps of Laughter.</p>
+        <dl class="confirm-summary" id="confirm-summary"></dl>
+        <button type="button" class="btn btn-outline" id="restart">Start a new request</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact" aria-labelledby="contact-h">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow eyebrow-dark">Talk to a person</p>
+        <h2 id="contact-h">Contact</h2>
+        <p class="sub">Hours: {business.hours}</p>
+      </div>
+      <div class="contact-grid">
+        {contacts.map((c) => (
+          <div class="contact-card">
+            <p class="tag">{c.area}</p>
+            <h3>{c.name}</h3>
+            <a class="contact-link" href={`tel:${c.tel}`}>{c.phone}</a>
+          </div>
+        ))}
+        <div class="contact-card contact-card-wide">
+          <p class="tag">Message us</p>
+          <h3>Email or WhatsApp</h3>
+          <p><a class="contact-link" href={`mailto:${business.email}`}>{business.email}</a></p>
+          <p class="cta-row">
+            <a class="btn btn-whatsapp" href={business.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp us<span class="sr-only"> (opens in a new tab)</span></a>
+          </p>
+          <address>{business.name}<br />{business.address}</address>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">{business.name}</p>
+      <p class="footer-tag">{business.tagline}</p>
+      <p class="footer-credit">Sample photos from <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>. Illustrations are placeholders.</p>
+      <p class="footer-quiet">Demo by Hopbook · <a href="mailto:muhammadkhalid48734@gmail.com">muhammadkhalid48734@gmail.com</a></p>
+    </div>
+  </footer>
+
+  <!-- MY REQUEST BAR -->
+  <aside class="request-bar" id="request-bar" aria-label="My request" inert>
+    <div class="request-bar-text">
+      <p class="request-bar-title">My request (<span id="bar-count">0</span>)</p>
+      <p class="request-bar-items" id="bar-items"></p>
+    </div>
+    <button type="button" class="btn btn-yellow btn-sm" id="bar-open">Review request</button>
+  </aside>
+  <p class="sr-only" id="request-live" role="status" aria-live="polite"></p>
+
+  <script>
+    import '../scripts/request.js';
+  </script>
+</Base>

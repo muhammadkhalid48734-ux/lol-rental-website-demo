@@ -1,0 +1,151 @@
+---
+// Original, lightweight illustrations used until real photos of each rental
+// are supplied. Purely decorative (aria-hidden); the card text carries the info.
+interface Props { art: string }
+const { art } = Astro.props;
+
+const star = (cx: number, cy: number, R: number) => {
+  const r = R * 0.45;
+  const pts: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const a = (Math.PI / 5) * i - Math.PI / 2;
+    const rad = i % 2 === 0 ? R : r;
+    pts.push(`${(cx + rad * Math.cos(a)).toFixed(1)},${(cy + rad * Math.sin(a)).toFixed(1)}`);
+  }
+  return pts.join(' ');
+};
+---
+<svg class="art-svg" viewBox="0 0 400 280" width="400" height="280" aria-hidden="true" focusable="false">
+  <ellipse cx="200" cy="254" rx="160" ry="13" fill="#1a0b2e" opacity=".14" />
+
+  {art === 'plunge' && (
+    <g>
+      <polygon points="232,118 268,118 380,250 306,250" fill="#5ad1f2" />
+      <polygon points="250,126 262,126 346,236 330,236" fill="#fff" opacity=".55" />
+      <rect x="62" y="112" width="178" height="136" rx="16" fill="#6d3fd1" />
+      <rect x="84" y="140" width="134" height="72" rx="12" fill="#1a0b2e" opacity=".4" />
+      <rect x="48" y="86" width="36" height="162" rx="14" fill="#4b27a8" />
+      <rect x="218" y="86" width="36" height="162" rx="14" fill="#4b27a8" />
+      <polygon points={star(66, 70, 22)} fill="#ffc933" />
+      <polygon points={star(236, 70, 22)} fill="#ffc933" />
+      <rect x="74" y="226" width="154" height="22" rx="11" fill="#2e63e8" />
+      <circle cx="352" cy="116" r="7" fill="#5ad1f2" /><circle cx="372" cy="146" r="5" fill="#5ad1f2" /><circle cx="330" cy="96" r="5" fill="#fff" />
+    </g>
+  )}
+
+  {art === 'unicorn' && (
+    <g>
+      <rect x="92" y="120" width="216" height="128" rx="18" fill="#2e63e8" />
+      <rect x="92" y="226" width="216" height="22" rx="11" fill="#6d3fd1" />
+      <rect x="74" y="96" width="36" height="152" rx="14" fill="#6d3fd1" />
+      <rect x="290" y="96" width="36" height="152" rx="14" fill="#6d3fd1" />
+      <polygon points={star(92, 80, 22)} fill="#ffc933" />
+      <polygon points={star(308, 80, 22)} fill="#ffc933" />
+      <path d="M126 226a74 74 0 0 1 148 0" fill="none" stroke="#ff4d4d" stroke-width="13" />
+      <path d="M140 226a60 60 0 0 1 120 0" fill="none" stroke="#ffc933" stroke-width="13" />
+      <path d="M154 226a46 46 0 0 1 92 0" fill="none" stroke="#5ad1f2" stroke-width="13" />
+      <ellipse cx="204" cy="86" rx="34" ry="26" fill="#fff" />
+      <polygon points="208,64 218,22 230,66" fill="#ffc933" />
+      <path d="M176 70c-18 4-24 22-16 40 4-16 12-22 22-26z" fill="#ff8ac4" />
+      <path d="M170 92c-14 8-14 26-4 40 2-14 8-22 16-26z" fill="#5ad1f2" />
+      <circle cx="214" cy="88" r="4.5" fill="#1a0b2e" />
+      <circle cx="226" cy="98" r="3" fill="#ff8ac4" />
+    </g>
+  )}
+
+  {art === 'toxic' && (
+    <g>
+      <polygon points="140,70 190,70 330,250 250,250" fill="#b4f03c" />
+      <polygon points="162,84 176,84 288,236 270,236" fill="#fff" opacity=".5" />
+      <rect x="64" y="96" width="112" height="152" rx="16" fill="#4b27a8" />
+      <rect x="82" y="124" width="76" height="70" rx="10" fill="#1a0b2e" opacity=".45" />
+      <circle cx="120" cy="159" r="30" fill="#ffc933" />
+      <circle cx="120" cy="159" r="15" fill="none" stroke="#1a0b2e" stroke-width="30" stroke-dasharray="15.7 15.7" transform="rotate(-15 120 159)" />
+      <circle cx="120" cy="159" r="6" fill="#ffc933" />
+      <rect x="82" y="214" width="76" height="20" rx="10" fill="#b4f03c" />
+      <circle cx="338" cy="190" r="8" fill="#b4f03c" /><circle cx="362" cy="214" r="5" fill="#b4f03c" /><circle cx="318" cy="168" r="5" fill="#fff" />
+    </g>
+  )}
+
+  {art === 'tropical' && (
+    <g>
+      <polygon points="150,96 190,96 270,250 190,250" fill="#5ad1f2" />
+      <polygon points="196,96 236,96 350,250 270,250" fill="#ffc933" />
+      <polygon points="168,108 178,108 222,236 206,236" fill="#fff" opacity=".55" />
+      <polygon points="214,108 224,108 296,236 280,236" fill="#fff" opacity=".55" />
+      <rect x="64" y="104" width="100" height="144" rx="16" fill="#ff4d4d" />
+      <rect x="82" y="132" width="64" height="62" rx="10" fill="#1a0b2e" opacity=".4" />
+      <rect x="64" y="228" width="100" height="20" rx="10" fill="#ffc933" />
+      <path d="M338 84c-36-4-58 10-70 34 28-10 50-12 70-34z" fill="#2fb36b" />
+      <path d="M338 84c26 12 36 34 30 60-14-22-24-40-30-60z" fill="#1f8f55" />
+      <path d="M338 84c-14-26-40-34-64-26 28 2 46 12 64 26z" fill="#2fb36b" />
+      <rect x="334" y="84" width="8" height="70" rx="4" fill="#7a4a1d" />
+    </g>
+  )}
+
+  {art === 'santa' && (
+    <g>
+      <rect x="62" y="116" width="186" height="132" rx="16" fill="#ff4d4d" />
+      <rect x="62" y="226" width="186" height="22" rx="11" fill="#fff" />
+      <rect x="84" y="142" width="142" height="66" rx="12" fill="#1a0b2e" opacity=".35" />
+      <rect x="48" y="92" width="36" height="156" rx="14" fill="#c92f2f" />
+      <rect x="226" y="92" width="36" height="156" rx="14" fill="#c92f2f" />
+      <path d="M66 94l-4-40 40 8z" fill="#ff4d4d" /><circle cx="66" cy="56" r="9" fill="#fff" />
+      <rect x="40" y="86" width="52" height="14" rx="7" fill="#fff" />
+      <rect x="296" y="56" width="70" height="52" rx="8" fill="#fff" stroke="#1a0b2e" stroke-width="5" />
+      <rect x="318" y="76" width="26" height="20" rx="3" fill="none" stroke="#ff4d4d" stroke-width="5" />
+      <rect x="318" y="108" width="26" height="6" rx="3" fill="#ffc933" />
+      <path d="M322 114l-5 22h34l-5-22" fill="none" stroke="#1a0b2e" stroke-width="3" />
+      <rect x="329" y="136" width="8" height="112" rx="4" fill="#1a0b2e" opacity=".75" />
+    </g>
+  )}
+
+  {art === 'jenga' && (
+    <g>
+      <rect x="120" y="222" width="52" height="26" rx="5" fill="#ffc933" /><rect x="174" y="222" width="52" height="26" rx="5" fill="#ff4d4d" /><rect x="228" y="222" width="52" height="26" rx="5" fill="#5ad1f2" />
+      <rect x="120" y="194" width="160" height="26" rx="5" fill="#fff" />
+      <rect x="120" y="166" width="52" height="26" rx="5" fill="#5ad1f2" /><rect x="174" y="166" width="52" height="26" rx="5" fill="#ffc933" /><rect x="228" y="166" width="52" height="26" rx="5" fill="#ff4d4d" />
+      <rect x="120" y="138" width="160" height="26" rx="5" fill="#ff8ac4" />
+      <rect x="120" y="110" width="52" height="26" rx="5" fill="#ff4d4d" /><rect x="174" y="110" width="52" height="26" rx="5" fill="#fff" /><rect x="228" y="110" width="52" height="26" rx="5" fill="#ffc933" />
+      <rect x="150" y="82" width="104" height="26" rx="5" fill="#5ad1f2" transform="rotate(-6 202 95)" />
+    </g>
+  )}
+
+  {art === 'cotton' && (
+    <g>
+      <ellipse cx="200" cy="214" rx="118" ry="30" fill="#6d3fd1" />
+      <path d="M82 214v-6c0-14 52-26 118-26s118 12 118 26v6" fill="#4b27a8" />
+      <ellipse cx="200" cy="198" rx="118" ry="28" fill="#2e63e8" />
+      <ellipse cx="200" cy="198" rx="92" ry="20" fill="#1a0b2e" opacity=".35" />
+      <circle cx="160" cy="132" r="42" fill="#ff8ac4" /><circle cx="214" cy="112" r="48" fill="#ffb3da" /><circle cx="250" cy="150" r="38" fill="#ff8ac4" /><circle cx="196" cy="156" r="40" fill="#ffb3da" />
+      <circle cx="226" cy="100" r="9" fill="#fff" opacity=".6" />
+      <rect x="318" y="66" width="8" height="150" rx="4" fill="#ffc933" transform="rotate(14 322 140)" />
+      <circle cx="312" cy="70" r="26" fill="#5ad1f2" /><circle cx="332" cy="82" r="20" fill="#ff8ac4" />
+    </g>
+  )}
+
+  {art === 'generator' && (
+    <g>
+      <path d="M90 226V120a16 16 0 0 1 16-16h188a16 16 0 0 1 16 16v106" fill="none" stroke="#1a0b2e" stroke-width="9" stroke-linecap="round" />
+      <rect x="102" y="116" width="196" height="116" rx="16" fill="#ff4d4d" />
+      <rect x="122" y="136" width="96" height="74" rx="10" fill="#1a0b2e" />
+      <polygon points="178,142 152,180 172,180 160,206 198,164 176,164" fill="#ffc933" />
+      <circle cx="252" cy="152" r="14" fill="#fff" /><circle cx="252" cy="152" r="6" fill="#1a0b2e" />
+      <circle cx="252" cy="196" r="14" fill="#fff" /><circle cx="252" cy="196" r="6" fill="#1a0b2e" />
+      <circle cx="122" cy="242" r="14" fill="#1a0b2e" /><circle cx="278" cy="242" r="14" fill="#1a0b2e" />
+      <circle cx="122" cy="242" r="5" fill="#5ad1f2" /><circle cx="278" cy="242" r="5" fill="#5ad1f2" />
+    </g>
+  )}
+
+  {art === 'hose' && (
+    <g>
+      <ellipse cx="190" cy="196" rx="124" ry="48" fill="none" stroke="#5ad1f2" stroke-width="22" />
+      <ellipse cx="190" cy="196" rx="92" ry="32" fill="none" stroke="#2e9fd1" stroke-width="22" />
+      <ellipse cx="190" cy="196" rx="58" ry="16" fill="none" stroke="#5ad1f2" stroke-width="20" />
+      <path d="M314 196c24-4 34-34 34-62" fill="none" stroke="#5ad1f2" stroke-width="22" stroke-linecap="round" />
+      <rect x="330" y="84" width="36" height="34" rx="9" fill="#ffc933" />
+      <rect x="338" y="64" width="20" height="26" rx="6" fill="#ff4d4d" />
+      <circle cx="302" cy="88" r="6" fill="#5ad1f2" /><circle cx="388" cy="78" r="5" fill="#5ad1f2" /><circle cx="296" cy="112" r="4" fill="#fff" />
+    </g>
+  )}
+</svg>
