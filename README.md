@@ -18,7 +18,7 @@ npm run build      # static output in dist/
 | Page markup | `src/pages/index.astro` |
 | "My request" builder, filters, demo submit (vanilla JS) | `src/scripts/request.js` |
 | Styles and brand tokens | `src/styles/global.css` |
-| Card illustrations (placeholders for photos) | `src/components/ItemArt.astro` |
+| Card illustrations (placeholders for photos), defined once as an SVG sprite | `src/components/ArtSprite.astro` |
 | Sample photos (Unsplash, optimized WebP) | `src/assets/`, fetched by `scripts/fetch-photos.mjs` |
 
 ## Demo behavior
@@ -39,9 +39,17 @@ npm run build      # static output in dist/
   add a photo per item and swap it into the card.
 * Photographer names for the two Unsplash sample photos (footer credits Unsplash only).
 
+## Design notes
+
+"Sticker pop": thick navy outlines, hard offset shadows, saturated colour blocks, scalloped
+"inflatable" section edges, a photo collage hero, a marquee of the real inventory and prices,
+bouncing headline, floating pill header with scroll-spy and mobile menu. Interactions: pictures fly
+into the sticky "My request" bar with a confetti burst, card tilt, animated filters, scroll reveal.
+All motion is disabled for `prefers-reduced-motion`; the page works without JS.
+
 ## Quality checks (mobile Lighthouse, local build)
 
-Performance 100, Accessibility 100, Best Practices 100, CLS 0, LCP about 1.2 s.
+Performance 100, Accessibility 100, Best Practices 100, CLS 0, LCP about 1.7 s.
 SEO shows 66 **only** because of the required `noindex` (Lighthouse "page is blocked
 from indexing"). The same build without `noindex`/`robots.txt` scores SEO 100.
 

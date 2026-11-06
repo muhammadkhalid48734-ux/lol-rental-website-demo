@@ -14,7 +14,7 @@ const pieces = [
 ---
 <div class={`confetti confetti-${variant}`} aria-hidden="true">
   {pieces.map((p) => (
-    <svg class="confetti-piece" viewBox="0 0 24 24" width={p.s} height={p.s} style={`top:${p.t};left:${p.l};--r:${p.r}deg;animation-delay:${p.d}s`}>
+    <svg class="confetti-piece" viewBox="0 0 24 24" width={p.s} height={p.s} data-c={p.c === '#5ad1f2' ? 'cyan' : 'x'} style={`top:${p.t};left:${p.l};--r:${p.r}deg;animation-delay:${p.d}s`}>
       {p.k === 'dot' && <circle cx="12" cy="12" r="8" fill={p.c} />}
       {p.k === 'tri' && <path d="M12 3l10 17H2z" fill={p.c} stroke-linejoin="round" />}
       {p.k === 'star' && <path d="M12 2l2.9 6.6 7.1.7-5.4 4.8 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.3l7.1-.7z" fill={p.c} />}

@@ -16,6 +16,7 @@ const { title, description } = Astro.props;
     <meta name="robots" content="noindex,nofollow" />
     <meta name="theme-color" content="#1a0b2e" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
     <link rel="preload" href={fredokaLatin} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
