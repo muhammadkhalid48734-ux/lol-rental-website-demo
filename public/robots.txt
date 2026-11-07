@@ -1,3 +1,0 @@
-# Private sales demo. Keep it out of every index.
-User-agent: *
-Disallow: /

@@ -10,6 +10,11 @@ const photos = [
   { id: '1602631985686-1bb0e6a8696e', out: 'party-band.webp', dl: 1100, w: 1100, q: 66 },
   { id: '1472162072942-cd5147eb3902', out: 'collage-laugh.webp', dl: 1400, w: 420, q: 64, crop: { left: 200, top: 60, width: 540, height: 540 } },
   { id: '1530103862676-de8c9debad1d', out: 'collage-balloons.webp', dl: 1400, w: 420, q: 64, crop: { left: 0, top: 0, width: 934, height: 934 } },
+  // Gallery (lightbox) photos
+  { id: '1496843916299-590492c751f4', out: 'gallery-pineapples.webp', dl: 1000, w: 1000, q: 62 },
+  { id: '1504196606672-aef5c9cefc92', out: 'gallery-balloons.webp', dl: 1000, w: 1000, q: 62 },
+  { id: '1513151233558-d860c5398176', out: 'gallery-confetti.webp', dl: 1000, w: 1000, q: 58 },
+  { id: '1464349095431-e9a21285b5f3', out: 'gallery-cake.webp', dl: 1000, w: 1000, q: 62 },
 ];
 
 for (const p of photos) {

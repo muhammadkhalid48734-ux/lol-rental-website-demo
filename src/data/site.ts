@@ -86,3 +86,42 @@ export const rentals: Rental[] = [
     specs: [],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// LAUNCH FLAG. The demo must never compete with the real site, so it is
+// noindex. At launch set `indexable: true`: this removes the robots meta tag
+// and flips robots.txt to allow crawling. Nothing else needs to change.
+// ---------------------------------------------------------------------------
+export const seo = { indexable: false };
+
+export const sampleNote = 'Sample availability. In the live version this shows your real bookings.';
+export const estimateNote = 'Estimate for rentals only, final details confirmed by Leaps of Laughter.';
+
+// "Often added" row: shown when one of the trigger units is in the request.
+export const oftenAdded = {
+  triggers: ['purple-plunge', 'twinkle-unicorn-combo', 'toxic-splash', 'tropical-plunge'],
+  items: ['generator', 'water-hose', 'cotton-candy-machine'],
+};
+
+// LocalBusiness structured data: only facts supplied by the business.
+export function localBusinessJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: business.name,
+    description: business.tagline,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '603 Spruce Street',
+      addressLocality: 'Plant City',
+      addressRegion: 'FL',
+      postalCode: '33563',
+      addressCountry: 'US',
+    },
+    telephone: contacts.map((c) => c.tel),
+    email: business.email,
+    // Hours were supplied without days, so no dayOfWeek is stated.
+    openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', opens: '09:00', closes: '17:00' }],
+    areaServed: serviceAreas.map((name) => ({ '@type': 'City', name })),
+  };
+}

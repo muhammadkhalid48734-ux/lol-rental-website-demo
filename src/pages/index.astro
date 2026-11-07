@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ArtSprite from '../components/ArtSprite.astro';
 import Confetti from '../components/Confetti.astro';
@@ -7,12 +7,29 @@ import heroPhoto from '../assets/hero.webp';
 import laughPhoto from '../assets/collage-laugh.webp';
 import balloonPhoto from '../assets/collage-balloons.webp';
 import bandPhoto from '../assets/party-band.webp';
-import { business, contacts, serviceAreas, categories, rentals } from '../data/site';
+import gPine from '../assets/gallery-pineapples.webp';
+import gBalloons from '../assets/gallery-balloons.webp';
+import gConfetti from '../assets/gallery-confetti.webp';
+import gCake from '../assets/gallery-cake.webp';
+import { business, contacts, serviceAreas, categories, rentals, estimateNote, oftenAdded } from '../data/site';
 
 const catLabel = Object.fromEntries(categories.map((c) => [c.id, c.label]));
 const catCount = Object.fromEntries(categories.map((c) => [c.id, rentals.filter((r) => r.category === c.id).length]));
 const money = (n: number) => `$${n}`;
 const word = 'unforgettable'.split('');
+
+// Sample Unsplash photos for the gallery strip + lightbox
+const gallery = [
+  { src: bandPhoto, alt: 'A Happy Birthday banner hung between two posts under string lights at an outdoor party' },
+  { src: gPine, alt: 'Three pineapples wearing party hats and sunglasses among colorful balloons' },
+  { src: heroPhoto, alt: 'A little girl with colorful paint on her face looks up and smiles' },
+  { src: gBalloons, alt: 'A hand holding a big bunch of colorful balloons' },
+  { src: gCake, alt: 'A sprinkle-covered layer cake on a blue cake stand' },
+  { src: gConfetti, alt: 'Colorful confetti floating against a teal background' },
+];
+const galleryFull = await Promise.all(
+  gallery.map((g) => getImage({ src: g.src, width: Math.min(g.src.width, 1000), format: 'webp', quality: 68 }))
+);
 ---
 <Base
   title="Leaps of Laughter | Party rentals in Plant City, FL"
@@ -30,8 +47,9 @@ const word = 'unforgettable'.split('');
       <nav class="nav" id="site-nav" aria-label="Main" data-nav>
         <a href="#rentals">Rentals</a>
         <a href="#how">How it works</a>
+        <a href="#gallery">Gallery</a>
         <a href="#areas">Service areas</a>
-        <a href="#request">Request</a>
+        <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
       </nav>
       <a class="btn btn-yellow btn-sm header-cta" href="#request">Request a date</a>
@@ -112,6 +130,16 @@ const word = 'unforgettable'.split('');
           <p class="sub">Tap “Add to my request” on anything you like, then send it all in one go.</p>
         </div>
 
+        <div class="datepick reveal" id="datepick">
+          <div class="datepick-copy">
+            <h3>Pick your date</h3>
+            <p>Choose your party date and the rentals that are free that day stay bright. Booked ones are greyed out.</p>
+            <p class="datepick-status" id="date-status" role="status">No date picked yet. Showing every rental.</p>
+            <button type="button" class="btn btn-outline btn-sm" id="date-clear" hidden>Clear date</button>
+          </div>
+          <div class="datepick-cal" id="main-cal"></div>
+        </div>
+
         <div class="chips reveal" role="group" aria-label="Filter rentals">
           <button type="button" class="chip" data-filter="all" aria-pressed="true">All <span class="chip-n">{rentals.length}</span></button>
           {categories.map((c) => (
@@ -120,13 +148,14 @@ const word = 'unforgettable'.split('');
         </div>
         <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
 
-        <ul class="grid" id="grid">
+        <ul class="grid" id="grid" data-often-triggers={oftenAdded.triggers.join(',')} data-often-items={oftenAdded.items.join(',')}>
           {rentals.map((r) => (
             <li class="card reveal" data-rental data-id={r.id} data-name={r.name} data-price={r.price} data-cat={r.category} data-art={r.art}>
               <div class="art">
                 <svg class="art-svg" viewBox="0 0 400 280" aria-hidden="true" focusable="false"><use href={`#art-${r.art}`} /></svg>
                 <p class="tag">{catLabel[r.category]}</p>
                 <p class="price-sticker"><span class="sr-only">Price: </span>{money(r.price)}</p>
+                <p class="booked-tag" hidden>Booked that day</p>
               </div>
               <div class="card-body">
                 <h3>{r.name}</h3>
@@ -136,10 +165,16 @@ const word = 'unforgettable'.split('');
                   </ul>
                 )}
                 {r.note && <p class="note">{r.note}</p>}
-                <button type="button" class="btn btn-add" data-add aria-pressed="false">
-                  <svg class="add-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="i-plus" d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path class="i-check" d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span class="add-label">Add to my request</span>
-                </button>
+                <div class="card-actions">
+                  <button type="button" class="btn btn-outline btn-sm btn-dates" data-details aria-label={`Check dates for ${r.name}`}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M3.5 10h17M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                    <span>Dates</span>
+                  </button>
+                  <button type="button" class="btn btn-add" data-add aria-pressed="false">
+                    <svg class="add-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="i-plus" d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path class="i-check" d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="add-label">Add to my request</span>
+                  </button>
+                </div>
               </div>
             </li>
           ))}
@@ -175,6 +210,26 @@ const word = 'unforgettable'.split('');
           </li>
         </ol>
       </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="section sec-gallery edge-top" id="gallery" aria-labelledby="gallery-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow-pill eyebrow-pill-dark">Sample photos</p>
+          <h2 id="gallery-h">Party <span class="mark">moments</span></h2>
+          <p class="sub">Tap a photo to see it bigger. These are Unsplash stand-ins; the live site will show Leaps of Laughter's own photos.</p>
+        </div>
+      </div>
+      <ul class="gallery" data-gallery>
+        {gallery.map((g, i) => (
+          <li>
+            <button type="button" class="g-tile" data-index={i} data-full={galleryFull[i].src} data-w={galleryFull[i].attributes.width} data-h={galleryFull[i].attributes.height} data-alt={g.alt} aria-label={`Open photo: ${g.alt}`}>
+              <Image src={g.src} alt="" widths={[240, 360, 480]} sizes="(min-width: 640px) 250px, 62vw" format="webp" quality={60} loading="lazy" decoding="async" />
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
 
     <!-- SERVICE AREAS -->
@@ -225,6 +280,11 @@ const word = 'unforgettable'.split('');
               <legend>Chosen items</legend>
               <p class="picked-empty" id="picked-empty">Nothing added yet. <a href="#rentals">Pick a rental</a> and it will show up here.</p>
               <ul class="picked-list" id="picked-list"></ul>
+              <div class="often" id="form-often" hidden></div>
+              <div class="form-total" id="form-total-row" hidden>
+                <p class="total-line">Estimated total <b id="form-total">$0</b></p>
+                <p class="est-note">{estimateNote}</p>
+              </div>
               <input type="hidden" name="items" id="items-field" value="" />
             </fieldset>
 
@@ -265,8 +325,33 @@ const word = 'unforgettable'.split('');
             <h3 id="confirm-title">Thanks! Your request is ready.</h3>
             <p class="confirm-demo"><strong>Demo:</strong> in the live version this request goes straight to Leaps of Laughter.</p>
             <dl class="confirm-summary" id="confirm-summary"></dl>
+            <p class="est-note confirm-est" id="confirm-est" hidden>{estimateNote}</p>
             <button type="button" class="btn btn-outline" id="restart">Start a new request</button>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section sec-faq edge-top" id="faq" aria-labelledby="faq-h">
+      <div class="container faq-grid">
+        <div class="section-head reveal">
+          <p class="eyebrow-pill eyebrow-pill-dark">Good to know</p>
+          <h2 id="faq-h">Quick <span class="mark">questions</span></h2>
+        </div>
+        <div class="faq-list reveal">
+          <details class="faq-item">
+            <summary>How do I book?</summary>
+            <p>Add the rentals you want, send a request with your event date and ZIP code, and Leaps of Laughter confirms the details with you.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Which areas do you serve?</summary>
+            <p>{serviceAreas.join(', ')}.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Can I ask about something not listed?</summary>
+            <p>Yes. Call {contacts[0].name} at <a href={`tel:${contacts[0].tel}`}>{contacts[0].phone}</a> ({contacts[0].area}) or {contacts[1].name} at <a href={`tel:${contacts[1].tel}`}>{contacts[1].phone}</a> ({contacts[1].area}), or message on <a href={business.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+          </details>
         </div>
       </div>
     </section>
@@ -317,13 +402,73 @@ const word = 'unforgettable'.split('');
 
   <!-- MY REQUEST BAR -->
   <aside class="request-bar" id="request-bar" aria-label="My request" inert>
-    <div class="bar-thumbs" id="bar-thumbs" aria-hidden="true"></div>
-    <div class="request-bar-text">
-      <p class="request-bar-title">My request (<span id="bar-count">0</span>)</p>
-      <p class="request-bar-items" id="bar-items"></p>
+    <div class="rb-panel" id="rb-panel" hidden>
+      <ul class="rb-list picked-list" id="rb-list"></ul>
+      <div class="often" id="rb-often" hidden></div>
     </div>
-    <button type="button" class="btn btn-yellow btn-sm" id="bar-open">Review request</button>
+    <div class="rb-row">
+      <div class="bar-thumbs" id="bar-thumbs" aria-hidden="true"></div>
+      <div class="request-bar-text">
+        <p class="request-bar-title">My request (<span id="bar-count">0</span>)</p>
+        <p class="request-bar-items" id="bar-items"></p>
+        <p class="request-bar-total">Estimated total <b id="bar-total">$0</b></p>
+      </div>
+      <button type="button" class="rb-toggle" id="rb-toggle" aria-expanded="false" aria-controls="rb-panel">
+        <span>Items</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="btn btn-yellow btn-sm" id="bar-open">Review<span class="hide-sm">&nbsp;request</span></button>
+    </div>
+    <p class="rb-note">{estimateNote}</p>
   </aside>
+
+  <!-- MOBILE QUICK CONTACT BAR (hidden on desktop, when the form is in view, and while My request is open) -->
+  <div class="contact-bar" id="contact-bar" role="region" aria-label="Quick contact">
+    <button type="button" class="btn btn-yellow btn-sm" id="cb-call" aria-expanded="false" aria-controls="cb-menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6.6 3.5l2.7 4-1.7 1.9a12 12 0 0 0 6.9 6.9l1.9-1.7 4 2.7-.9 3.3c-.2.8-.9 1.3-1.7 1.3C10.9 21.9 2.1 13.1 2.1 6.1c0-.8.5-1.5 1.3-1.7z" fill="currentColor"/></svg>
+      <span>Call</span>
+    </button>
+    <a class="btn btn-navy btn-sm" href={business.whatsapp} target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 8.5c0 3.3 2.7 6 6 6l1.2-1.4-2-1-.9.7a4 4 0 0 1-1.6-1.6l.7-.9-1-2z" fill="currentColor"/></svg>
+      <span>WhatsApp<span class="sr-only"> (opens in a new tab)</span></span>
+    </a>
+    <ul class="cb-menu" id="cb-menu" hidden>
+      {contacts.map((c) => <li><a href={`tel:${c.tel}`}><span>{c.name} <small>{c.area}</small></span> <b>{c.phone}</b></a></li>)}
+    </ul>
+  </div>
+
+  <!-- RENTAL DETAIL DIALOG -->
+  <dialog class="detail" id="detail" aria-labelledby="detail-title">
+    <button type="button" class="dlg-close" data-close aria-label="Close details"><span aria-hidden="true">×</span></button>
+    <div class="detail-grid">
+      <div class="detail-info">
+        <div class="detail-art" id="detail-art"></div>
+        <p class="tag" id="detail-tag"></p>
+        <h3 id="detail-title"></h3>
+        <p class="detail-price" id="detail-price"></p>
+        <div id="detail-meta"></div>
+        <p class="detail-status" id="detail-status" role="status"></p>
+        <button type="button" class="btn btn-add" id="detail-add" aria-pressed="false">
+          <svg class="add-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path class="i-plus" d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/><path class="i-check" d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="add-label">Add to my request</span>
+        </button>
+      </div>
+      <div class="detail-cal" id="detail-cal"></div>
+    </div>
+  </dialog>
+
+  <!-- PHOTO LIGHTBOX -->
+  <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
+    <button type="button" class="dlg-close" data-close aria-label="Close photo"><span aria-hidden="true">×</span></button>
+    <figure>
+      <img id="lb-img" alt="" width="1000" height="667" />
+      <figcaption><span id="lb-cap"></span> <span class="lb-count" id="lb-count"></span></figcaption>
+    </figure>
+    <div class="lb-nav">
+      <button type="button" class="btn btn-outline btn-sm" id="lb-prev" aria-label="Previous photo"><span aria-hidden="true">‹</span> Prev</button>
+      <button type="button" class="btn btn-outline btn-sm" id="lb-next" aria-label="Next photo">Next <span aria-hidden="true">›</span></button>
+    </div>
+  </dialog>
   <p class="sr-only" id="request-live" role="status" aria-live="polite"></p>
 
   <script>
